@@ -45,4 +45,4 @@ public class InventoryDao {
     }
         // TODO: Implement the logic to remove a vehicle from the inventory
     }
-}
+
