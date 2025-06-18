@@ -57,33 +57,54 @@ public class VehicleDao {
 
 
     public List<Vehicle> searchByPriceRange(double minPrice, double maxPrice) {
-        // TODO: Implement the logic to search vehicles by price range
-        return new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE price BETWEEN ? AND ?";
+        return executeVehicleQuery(sql, minPrice, maxPrice);
     }
 
     public List<Vehicle> searchByMakeModel(String make, String model) {
-        // TODO: Implement the logic to search vehicles by make and model
-        return new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE make = ? AND model = ?";
+        return executeVehicleQuery(sql, make, model);
     }
 
     public List<Vehicle> searchByYearRange(int minYear, int maxYear) {
-        // TODO: Implement the logic to search vehicles by year range
-        return new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE year BETWEEN ? AND ?";
+        return executeVehicleQuery(sql, minYear, maxYear);
     }
 
     public List<Vehicle> searchByColor(String color) {
-        // TODO: Implement the logic to search vehicles by color
-        return new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE color = ?";
+        return executeVehicleQuery(sql, color);
     }
 
     public List<Vehicle> searchByMileageRange(int minMileage, int maxMileage) {
-        // TODO: Implement the logic to search vehicles by mileage range
-        return new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE odometer BETWEEN ? AND ?";
+        return executeVehicleQuery(sql, minMileage, maxMileage);
     }
 
     public List<Vehicle> searchByType(String type) {
-        // TODO: Implement the logic to search vehicles by type
-        return new ArrayList<>();
+        String sql = "SELECT * FROM vehicles WHERE vehicleType = ?";
+        return executeVehicleQuery(sql, type);
+    }
+    private List<Vehicle> executeVehicleQuery(String sql, Object... params) {
+        List<Vehicle> vehicles = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            for (int i = 0; i < params.length; i++) {
+                statement.setObject(i + 1, params[i]);
+            }
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                vehicles.add(createVehicleFromResultSet(resultSet));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return vehicles;
     }
 
     private Vehicle createVehicleFromResultSet(ResultSet resultSet) throws SQLException {
